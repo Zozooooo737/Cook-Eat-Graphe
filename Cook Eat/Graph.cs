@@ -5,12 +5,16 @@
         private List<Node> nodes;
         private List<Link> links;
 
+        private bool isDirected;
 
 
-        public Graph()
+
+        public Graph(bool isDirected)
         {
             nodes = new List<Node>();
             links = new List<Link>();
+
+            this.isDirected = isDirected;
         }
 
 
@@ -32,18 +36,20 @@
 
         public void AddLink(int source, int target)
         {
-            links.Add(new Link(new Node(source), new Node(target)));
-            this.AddNode(source);
-            this.AddNode(target);
-            // Vérifier que le lien n'existe pas déjà
+            if((!isDirected && !links.Any(l => l.Node1 == target && l.Node2 == source)) || isDirected)
+            {
+                links.Add(new Link(source, target));
+                this.AddNode(source);
+                this.AddNode(target);
+            }
         }
 
 
         public void FromAdjacencyList((int, int[])[] adjacencyList)
         {
-            for(int i = 0;i < adjacencyList.Length; i++)
+            for(int i = 0; i < adjacencyList.Length; i++)
             {
-                for (int j = 0; j < adjacencyList[i].Item2.Length; j++)
+                for(int j = 0; j < adjacencyList[i].Item2.Length; j++)
                 {
                     AddLink(adjacencyList[i].Item1, adjacencyList[i].Item2[j]);
                 }
@@ -55,7 +61,7 @@
         {
             for(int i = 0; i < adjacencyMatrix.GetLength(0); i++)
             {
-                for(int j=0;j < adjacencyMatrix.GetLength(1); j++)
+                for(int j=0; j < adjacencyMatrix.GetLength(1); j++)
                 {
                     if (adjacencyMatrix[i, j] == true)
                     {
