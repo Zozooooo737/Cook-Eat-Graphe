@@ -1,27 +1,15 @@
-﻿namespace Cook_Eat
+﻿internal class Link
 {
-    internal class Link
+    public Node StartNode { get; }
+    public Node EndNode { get; }
+    public double Weight { get; }
+
+
+
+    public Link(Node startNode, Node endNode, double weight)
     {
-        private int node1;
-        private int node2;
-
-
-        public Link(int node1, int node2) 
-        {
-            this.node1 = node1;
-            this.node2 = node2;
-        }
-
-
-
-        public int Node1
-        {
-            get { return node1; }
-        }
-
-        public int Node2
-        {
-            get { return node2; }
-        }
+        StartNode = startNode;
+        EndNode = endNode;
+        Weight = weight;
     }
 }

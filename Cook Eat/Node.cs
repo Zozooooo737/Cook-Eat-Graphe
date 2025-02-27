@@ -1,44 +1,21 @@
-﻿using System.Xml.Linq;
-
-namespace Cook_Eat
+﻿internal class Node
 {
-    internal class Node
+    public int Id { get; }
+    public HashSet<Node> Successors { get; }
+
+
+
+
+    public Node(int id)
     {
-        private int id;
-
-        private List<int> successors;
-
-
-        public Node(int id)
-        {
-            this.id = id;
-            successors = [];
-        }
+        Id = id;
+        Successors = new HashSet<Node>();
+    }
 
 
 
-        public int Id
-        {
-            get { return id; }
-        }
-
-
-        public List<int> Successors
-        {
-            get { return successors; }
-        }
-
-
-        public void NewSuccessor(int id)
-        {
-            for (int i = 0; i < successors.Count; i++)
-            {
-                if (successors[i] == id)
-                {
-                    return;
-                }
-            }
-            successors.Add(id);
-        }
+    public void AddSuccessor(Node node)
+    {
+        Successors.Add(node);
     }
 }
