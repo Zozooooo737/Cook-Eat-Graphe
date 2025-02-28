@@ -9,6 +9,9 @@
 
 
 
+        /// <summary>
+        /// Exemple d'utilisation d'un graphe représentant les adhérents d'un club de Karaté.
+        /// </summary>
         static void KarateExample()
         {
             Graph g = new Graph(isDirected: false, isWeighted: false);
@@ -24,6 +27,11 @@
 
 
 
+        /// <summary>
+        /// Lit un fichier texte pour le transformer en une liste d'adjacence.
+        /// </summary>
+        /// <param name="path">Chemin du fichier contenant les données.</param>
+        /// <returns>Un dictionnaire représentant la liste d'adjacence.</returns>
         private static Dictionary<int, List<(int, int)>> ReadFileForAdjacencyList(string path)
         {
             Dictionary<int, List<(int, int)>> adjacencyList = new Dictionary<int, List<(int, int)>>();
@@ -53,6 +61,11 @@
         }
 
 
+        /// <summary>
+        /// Lit un fichier texte pour le transformer en une matrice d'adjacence.
+        /// </summary>
+        /// <param name="path">Chemin du fichier contenant les données.</param>
+        /// <returns>Un dictionnaire représentant la liste d'adjacence.</returns>
         private static int[,] ReadFileForAdjacencyMatrix(string path)
         {
             string[] lines = File.ReadAllLines(path);

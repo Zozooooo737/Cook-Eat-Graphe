@@ -76,7 +76,7 @@
             if (!Nodes.Contains(target)) Nodes.Add(target);
 
             // Vérifie si le lien existe déjà pour éviter les doublons
-            if ((!isDirected && !Links.Any(l => l.StartNode == target && l.EndNode == source) || (isDirected && !Links.Any(l => l.StartNode == source && l.EndNode == target))))
+            if ((!isDirected && !Links.Any(l => l.StartNode == target && l.EndNode == source) && !Links.Any(l => l.StartNode == source && l.EndNode == target)) || (isDirected && !Links.Any(l => l.StartNode == source && l.EndNode == target)))
             {
                 // Ajoute le lien entre les nœuds
                 Links.Add(new Link(source, target, weight));
