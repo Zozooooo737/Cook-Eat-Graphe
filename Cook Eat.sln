@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cook Eat", "Cook Eat\Cook Eat.csproj", "{28B0A260-B97D-4C5F-8CA4-ABE4ADB8AD24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cook Eat", "Cook Eat\Cook Eat.csproj", "{28B0A260-B97D-4C5F-8CA4-ABE4ADB8AD24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cook Eat Tests", "Cook Eat Tests\Cook Eat Tests.csproj", "{A004BC89-236D-4D51-9BF5-5BD5A1C48B92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{28B0A260-B97D-4C5F-8CA4-ABE4ADB8AD24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28B0A260-B97D-4C5F-8CA4-ABE4ADB8AD24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28B0A260-B97D-4C5F-8CA4-ABE4ADB8AD24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A004BC89-236D-4D51-9BF5-5BD5A1C48B92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A004BC89-236D-4D51-9BF5-5BD5A1C48B92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A004BC89-236D-4D51-9BF5-5BD5A1C48B92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A004BC89-236D-4D51-9BF5-5BD5A1C48B92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

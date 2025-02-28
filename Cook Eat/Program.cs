@@ -1,6 +1,6 @@
 ﻿namespace Cook_Eat
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
@@ -29,7 +29,7 @@
             Dictionary<int, List<(int, int)>> adjacencyList = new Dictionary<int, List<(int, int)>>();
             string[] lines = File.ReadAllLines(path);
 
-            for(int i = 1; i < lines.Length; i++)
+            for (int i = 1; i < lines.Length; i++)
             {
                 string[] parts = lines[i].Split(" ");
                 int source = int.Parse(parts[0]);
