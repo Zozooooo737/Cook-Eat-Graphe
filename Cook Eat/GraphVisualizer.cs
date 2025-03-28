@@ -7,12 +7,12 @@ namespace Cook_Eat
     /// Classe s'occupant de la visualisation d'un graphe sous forme d'image.
     /// Permet de dessiner les nœuds et les liens du graphe, avec des options pour le positionnement des nœuds et la coloration.
     /// </summary>
-    public class GraphVisualizer
+    public class GraphVisualizer<T> 
     {
         /// <summary>
         /// Le graphe à visualiser.
         /// </summary>
-        private Graph graph;
+        private Graph<T> graph;
 
         /// <summary>
         /// Bitmap utilisé pour dessiner l'image du graphe.
@@ -37,12 +37,12 @@ namespace Cook_Eat
         /// <summary>
         /// Dictionnaire stockant les positions des nœuds sur l'image.
         /// </summary>
-        private Dictionary<Node, PointF> nodePositions;
+        private Dictionary<Node<T>, PointF> nodePositions;
 
         /// <summary>
         /// Dictionnaire stockant les couleurs attribuées à chaque nœud.
         /// </summary>
-        private Dictionary<Node, Brush> nodeColors;
+        private Dictionary<Node<T>, Brush> nodeColors;
 
         /// <summary>
         /// Indique si les nœuds doivent être positionnés de manière régulière (en cercle) ou aléatoire.
@@ -58,7 +58,7 @@ namespace Cook_Eat
         /// <param name="useRegularPositioning">True pour positionner les nœuds en cercle, False pour un positionnement aléatoire.</param>
         /// <param name="width">Largeur de l'image.</param>
         /// <param name="height">Hauteur de l'image.</param>
-        public GraphVisualizer(Graph graph, bool useRegularPositioning = false, int width = 1600, int height = 1200)
+        public GraphVisualizer(Graph<T> graph, bool useRegularPositioning = false, int width = 1600, int height = 1200)
         {
             this.graph = graph;
             this.width = width;
@@ -68,8 +68,8 @@ namespace Cook_Eat
             bitmap = new Bitmap(width, height);
             graphics = Graphics.FromImage(bitmap);
 
-            nodePositions = new Dictionary<Node, PointF>();
-            nodeColors = new Dictionary<Node, Brush>();
+            nodePositions = new Dictionary<Node<T>, PointF>();
+            nodeColors = new Dictionary<Node<T>, Brush>();
 
             AssignRandomColors(); // Attribue des couleurs aléatoires aux nœuds
         }
@@ -204,7 +204,7 @@ namespace Cook_Eat
         /// Dessine un nœud sur l'image.
         /// </summary>
         /// <param name="node">Le nœud à dessiner.</param>
-        private void DrawNode(Node node)
+        private void DrawNode(Node<T> node)
         {
             var position = nodePositions[node];
             int totalNodes = graph.Nodes.Count;
@@ -225,7 +225,7 @@ namespace Cook_Eat
         /// Dessine un lien entre deux nœuds.
         /// </summary>
         /// <param name="link">Le lien à dessiner.</param>
-        private void DrawLink(Link link)
+        private void DrawLink(Link<T> link)
         {
             var start = nodePositions[link.StartNode];
             var end = nodePositions[link.EndNode];

@@ -14,17 +14,100 @@
         /// </summary>
         static void KarateExample()
         {
-            Graph g = new Graph(isDirected: false, isWeighted: false);
+            Graph<int> g = new Graph<int>(isDirected: false, isWeighted: true); 
             g.FromAdjacencyList(ReadFileForAdjacencyList("../../../data/karate.txt"));
 
-            Console.WriteLine("Exemple des adhérents du club associatif de ²Karaté :\n");
+            Console.WriteLine("Exemple des adhérents du club associatif de Karaté :\n");
 
             Console.WriteLine(g.ToString());
 
-            GraphVisualizer visualizer = new GraphVisualizer(g, false);
+            GraphVisualizer<int> visualizer = new GraphVisualizer<int>(g, false);
             visualizer.Visualize("karate.png");
+
+            Console.WriteLine("Résultats de Bellman-Ford:");
+            var bellmanFordResult = g.BellmanFord(g.Nodes[0]);  
+            if (bellmanFordResult != null)
+            {
+                Console.WriteLine("Chemins depuis le noeud 1:");
+                AfficherCheminsBellmanFord(bellmanFordResult, g, 0); 
+            }
+            else
+            {
+                Console.WriteLine("Un cycle négatif a été détecté.");
+            }
+
+            Console.WriteLine("\nRésultats de Dijkstra:");
+            AfficherCheminsDijkstra(g.Nodes[0].Id, g); 
         }
 
+
+        /// <summary>
+        /// Affiche les plus courts chemins entre le noeud source et tous les autres noeuds en utilisant les résultats de l'algorithme Bellman-Ford.
+        /// </summary>
+        /// <param name="dist">Le tableau des distances et des prédécesseurs retourné par l'algorithme Bellman-Ford.</param>
+        /// <param name="g">Le graphe dans lequel les chemins sont calculés.</param>
+        /// <param name="sourceId">L'ID du noeud source à partir duquel les plus courts chemins sont calculés.</param>
+        public static void AfficherCheminsBellmanFord((double, int)[] dist, Graph<int> g, int sourceId)
+        {
+            Console.WriteLine($"Plus courts chemins depuis le noeud {sourceId + 1} (Bellman-Ford) :\n");
+
+            foreach (var node in g.Nodes)
+            {
+                if (node.Id == sourceId) continue;
+
+                List<int> chemin = new List<int>();
+                int? current = node.Id - 1;
+                while (current != null && current != -1)
+                {
+                    chemin.Insert(0, current.Value + 1);
+                    current = dist[current.Value].Item2;
+                }
+
+                if (chemin.Count > 1)
+                {
+                    Console.WriteLine($"Noeud cible: {node.Id}, Distance: {dist[node.Id - 1].Item1}, Chemin: {string.Join(" -> ", chemin)}");
+                }
+                else
+                {
+                    Console.WriteLine($"Noeud cible: {node.Id}, inaccessible depuis {sourceId + 1}");
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Affiche les plus courts chemins entre le noeud de départ et tous les autres noeuds en utilisant l'algorithme de Dijkstra.
+        /// </summary>
+        /// <param name="startId">L'ID du noeud de départ à partir duquel les plus courts chemins sont calculés.</param>
+        /// <param name="g">Le graphe dans lequel les chemins sont calculés.</param>
+        public static void AfficherCheminsDijkstra(int startId, Graph<int> g)
+        {
+            (double, int)[] dist = g.Dijkstra(g.Nodes[startId]);
+
+            Console.WriteLine($"Plus courts chemins depuis le noeud {startId + 1} (Dijkstra) :\n");
+
+            foreach (var node in g.Nodes)
+            {
+                if (node.Id == startId) continue;
+
+                List<int> chemin = new List<int>();
+                int? current = node.Id - 1;
+                while (current != null && current != -1)
+                {
+                    chemin.Insert(0, current.Value + 1); 
+                    current = dist[current.Value].Item2; 
+                }
+
+                if (chemin.Count > 1)
+                {
+                    Console.WriteLine($"Noeud cible: {node.Id}, Distance: {dist[node.Id - 1].Item1}, Chemin: {string.Join(" -> ", chemin)}");
+                }
+                else
+                {
+                    Console.WriteLine($"Noeud cible: {node.Id}, inaccessible depuis {startId + 1}");
+                }
+            }
+        }
 
 
         /// <summary>

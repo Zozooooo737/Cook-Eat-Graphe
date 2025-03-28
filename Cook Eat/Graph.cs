@@ -1,20 +1,22 @@
-﻿namespace Cook_Eat
+﻿using System.Xml.Linq;
+
+namespace Cook_Eat
 {
     /// <summary>
     /// Représente un graphe composé de nœuds (nodes) et de liens (links).
     /// Le graphe peut être orienté ou non orienté, et pondéré ou non pondéré.
     /// </summary>
-    public class Graph
+    public class Graph<T>
     {
         /// <summary>
         /// Liste des nœuds du graphe.
         /// </summary>
-        public List<Node> Nodes { get; }
+        public List<Node<T>> Nodes { get; }
 
         /// <summary>
         /// Liste des liens du graphe.
         /// </summary>
-        public List<Link> Links { get; }
+        public List<Link<T>> Links { get; }
 
         /// <summary>
         /// Indique si le graphe est orienté.
@@ -35,8 +37,8 @@
         /// <param name="isWeighted">True si le graphe est pondéré, False sinon.</param>
         public Graph(bool isDirected, bool isWeighted)
         {
-            Nodes = new List<Node>();
-            Links = new List<Link>();
+            Nodes = new List<Node<T>>();
+            Links = new List<Link<T>>();
 
             this.isDirected = isDirected;
             this.isWeighted = isWeighted;
@@ -52,7 +54,7 @@
         {
             if (!Nodes.Any(n => n.Id == id))
             {
-                Nodes.Add(new Node(id));
+                Nodes.Add(new Node<T>(id));
             }
         }
 
@@ -68,18 +70,18 @@
         public void AddLink(int sourceId, int targetId, double weight = 1.0)
         {
             // Recherche ou création du nœud source
-            Node source = Nodes.FirstOrDefault(n => n.Id == sourceId) ?? new Node(sourceId);
+            Node<T> source = Nodes.FirstOrDefault(n => n.Id == sourceId) ?? new Node<T>(sourceId);
             if (!Nodes.Contains(source)) Nodes.Add(source);
 
             // Recherche ou création du nœud cible
-            Node target = Nodes.FirstOrDefault(n => n.Id == targetId) ?? new Node(targetId);
+            Node<T> target = Nodes.FirstOrDefault(n => n.Id == targetId) ?? new Node<T>(targetId);
             if (!Nodes.Contains(target)) Nodes.Add(target);
 
             // Vérifie si le lien existe déjà pour éviter les doublons
             if ((!isDirected && !Links.Any(l => l.StartNode == target && l.EndNode == source) && !Links.Any(l => l.StartNode == source && l.EndNode == target)) || (isDirected && !Links.Any(l => l.StartNode == source && l.EndNode == target)))
             {
                 // Ajoute le lien entre les nœuds
-                Links.Add(new Link(source, target, weight));
+                Links.Add(new Link<T>(source, target, weight));
 
                 // Ajoute le successeur au nœud source
                 source.AddSuccessor(target);
@@ -138,19 +140,19 @@
         /// </summary>
         /// <param name="startId">L'identifiant du nœud de départ.</param>
         /// <returns>La liste des nœuds visités.</returns>
-        public List<Node> BreadthFirstSearch(int startId)
+        public List<Node<T>> BreadthFirstSearch(int startId)
         {
-            HashSet<Node> visited = new HashSet<Node>();
-            Queue<Node> queue = new Queue<Node>();
-            Node startNode = Nodes.First(n => n.Id == startId);
+            HashSet<Node<T>> visited = new HashSet<Node<T>>();
+            Queue<Node<T>> queue = new Queue<Node<T>>();
+            Node<T> startNode = Nodes.First(n => n.Id == startId);
             queue.Enqueue(startNode);
             visited.Add(startNode);
 
             while (queue.Count > 0)
             {
-                Node currentNode = queue.Dequeue();
+                Node<T> currentNode = queue.Dequeue();
 
-                foreach (Node successor in currentNode.Successors)
+                foreach (Node<T> successor in currentNode.Successors)
                 {
                     if (!visited.Contains(successor))
                     {
@@ -169,9 +171,9 @@
         /// </summary>
         /// <param name="startId">L'identifiant du nœud de départ.</param>
         /// <returns>La liste des nœuds visités.</returns>
-        public List<Node> DepthFirstSearch(int startId)
+        public List<Node<T>> DepthFirstSearch(int startId)
         {
-            HashSet<Node> visited = new HashSet<Node>();
+            HashSet<Node<T>> visited = new HashSet<Node<T>>();
             DFS(Nodes.First(n => n.Id == startId), visited);
 
             return visited.ToList();
@@ -183,12 +185,12 @@
         /// </summary>
         /// <param name="node">Le nœud actuel.</param>
         /// <param name="visited">L'ensemble des nœuds déjà visités.</param>
-        private void DFS(Node node, HashSet<Node> visited)
+        private void DFS(Node<T> node, HashSet<Node<T>> visited)
         {
             if (!visited.Contains(node))
             {
                 visited.Add(node);
-                foreach (Node successor in node.Successors)
+                foreach (Node<T> successor in node.Successors)
                 {
                     DFS(successor, visited);
                 }
@@ -225,7 +227,7 @@
         {
             if (Nodes.Count == 0) return true;
 
-            HashSet<Node> visited = new HashSet<Node>();
+            HashSet<Node<T>> visited = new HashSet<Node<T>>();
             DFS(Nodes[0], visited);
 
             return visited.Count == Nodes.Count;
@@ -239,10 +241,10 @@
         /// <returns>True si le graphe contient un cycle, False sinon.</returns>
         public bool ContainsCycle()
         {
-            HashSet<Node> visited = new HashSet<Node>();
-            HashSet<Node> recursionStack = new HashSet<Node>();
+            HashSet<Node<T>> visited = new HashSet<Node<T>>();
+            HashSet<Node<T>> recursionStack = new HashSet<Node<T>>();
 
-            foreach (Node node in Nodes)
+            foreach (Node<T> node in Nodes)
             {
                 if (ContainsCycleTool(node, visited, recursionStack))
                 {
@@ -261,7 +263,7 @@
         /// <param name="visited">L'ensemble des nœuds déjà visités.</param>
         /// <param name="recursionStack">L'ensemble des nœuds dans le chemin actuel de la récursion.</param>
         /// <returns>True si un cycle est détecté, False sinon.</returns>
-        private bool ContainsCycleTool(Node node, HashSet<Node> visited, HashSet<Node> recursionStack)
+        private bool ContainsCycleTool(Node<T> node, HashSet<Node<T>> visited, HashSet<Node<T>> recursionStack)
         {
             if (recursionStack.Contains(node))
             {
@@ -276,7 +278,7 @@
             visited.Add(node);
             recursionStack.Add(node);
 
-            foreach (Node successor in node.Successors)
+            foreach (Node<T> successor in node.Successors)
             {
                 if (ContainsCycleTool(successor, visited, recursionStack))
                 {
@@ -313,7 +315,7 @@
                            string.Join(", ", BreadthFirstSearch(1).Select(node => node.Id));
 
             description += "\n\nNodes:";
-            foreach (Node node in Nodes)
+            foreach (Node<T> node in Nodes)
             {
                 description += "\n  - Node " + node.Id;
             }
@@ -331,6 +333,81 @@
                 }
             }
             return description;
+        }
+
+
+        /// <summary>
+        /// Méthode de parcours de graphe utilisant l'algorithme de Dijkstra.
+        /// Utilise deux listes, une pour conserver les plus courtes distances entre deux noeuds avec le
+        /// prédécesseur du point d'arrivée et une autre pour savoir quels noeuds ont été visités ou non.
+        /// </summary>
+        /// <param name="source">Le noeud depuis lequel on souhaite partir.</param>
+        /// <returns>La liste des plus courtes distances entre source et n'importe 
+        /// quel noeud avec le prédécesseur du noeud d'arrivée.</returns>
+        public (double, int)[] Dijkstra(Node<T> source)
+        {
+            (double, int)[] dist = new (double, int)[Nodes.Count];
+            bool[] visited = new bool[Nodes.Count];
+            for (int i = 0; i < Nodes.Count; i++)
+            {
+                if (i + 1 == source.Id) { dist[i] = (0, -1); }
+                else { dist[i] = (double.MaxValue, -1); }
+                visited[i] = false;
+            }
+            int min = source.Id;
+            for (int i = 0; i < Nodes.Count; i++)
+            {
+                visited[min] = true;
+                foreach (Link<T> link in Links)
+                {
+                    if (link.StartNode.Id == min && !visited[link.EndNode.Id - 1])
+                    {
+                        double a = dist[link.EndNode.Id - 1].Item1;
+                        double b = dist[min - 1].Item1 + link.Weight;
+                        if (b < a) { dist[link.EndNode.Id - 1] = (b, min - 1); }
+                    }
+                }
+                double tmp = double.MaxValue;
+                for (int j = 0; j < dist.Length; j++)
+                {
+                    if (!visited[j] && dist[j].Item1 < tmp) { tmp = dist[j].Item1; min = j + 1; }
+                }
+                if (tmp == double.MaxValue) { return dist; }
+            }
+            return dist;
+        }
+
+
+        /// <summary>
+        /// Méthode de parcours de graphe utilisant l'algorithme de Bellman-Ford.
+        /// Utilise une liste pour conserver les plus courtes distances entre 
+        /// deux noeuds avec le prédécesseur du point d'arrivée.
+        /// </summary>
+        /// <param name="source">Le noeud depuis lequel on souhaite partir.</param>
+        /// <returns>La liste des plus courtes distances entre source et n'importe quel noeud avec
+        /// le prédécesseur du noeud d'arrivée ou null si un cycle négatif est détecté.</returns>
+        public (double, int)[] BellmanFord(Node<T> source)
+        {
+            (double, int)[] dist = new (double, int)[Nodes.Count];
+            for (int i = 0; i < Nodes.Count; i++)
+            {
+                if (i + 1 == source.Id) { dist[i] = (0, -1); }
+                else { dist[i] = (double.MaxValue, -1); }
+            }
+            for (int i = 0; i < Nodes.Count; i++)
+            {
+                foreach (Link<T> link in Links)
+                {
+                    int left = link.StartNode.Id;
+                    int right = link.EndNode.Id;
+                    if (dist[left - 1].Item1 < double.MaxValue && dist[left - 1].Item1 + link.Weight < dist[right - 1].Item1)
+                    {
+                        dist[link.EndNode.Id - 1] = (dist[left - 1].Item1 + link.Weight, left - 1);
+                        if (i == Nodes.Count - 1) { return null; }
+                    }
+                }
+            }
+            return dist;
         }
     }
 }
