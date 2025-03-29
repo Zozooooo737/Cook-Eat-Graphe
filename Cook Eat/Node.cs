@@ -12,6 +12,16 @@
         public int Id { get; }
 
         /// <summary>
+        /// Le groupe auquel le noeud appartient.
+        /// </summary>
+        public string Group { get; }
+
+        /// <summary>
+        /// La description du noeud, ce qu'il représente.
+        /// </summary>
+        public string Description { get; }
+
+        /// <summary>
         /// L'ensemble des successeurs du nœud.
         /// Un successeur est un nœud directement accessible depuis ce nœud via un lien.
         /// </summary>
@@ -23,9 +33,13 @@
         /// Constructeur de la classe Node.
         /// </summary>
         /// <param name="id">L'identifiant unique du nœud.</param>
-        public Node(int id)
+        /// <param name="group">Le groupe du noeud.</param>
+        /// <param name="description">La descritpion du noeud.</param>
+        public Node(int id, string group, string description)
         {
             Id = id;
+            Group = group;
+            Description = description;
             Successors = new HashSet<Node<T>>();
         }
 

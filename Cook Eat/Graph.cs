@@ -54,7 +54,20 @@ namespace Cook_Eat
         {
             if (!Nodes.Any(n => n.Id == id))
             {
-                Nodes.Add(new Node<T>(id));
+                Nodes.Add(new Node<T>(id, null, null));
+            }
+        }
+
+
+        /// <summary>
+        /// Ajoute un ensemble de nœuds au graphe.
+        /// </summary>
+        /// <param name="nodes">La liste des noeuds à ajouter</param>
+        public void AddNodes(List<Node<T>> nodes)
+        {
+            foreach (Node<T> element in nodes)
+            {
+                Nodes.Add(element);
             }
         }
 
@@ -121,6 +134,30 @@ namespace Cook_Eat
         /// <param name="adjacencyMatrix">La matrice d'adjacence.</param>
         public void FromAdjacencyMatrix(int[,] adjacencyMatrix)
         {
+            for (int i = 0; i < adjacencyMatrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < adjacencyMatrix.GetLength(1); j++)
+                {
+                    if (adjacencyMatrix[i, j] > 0)
+                    {
+                        AddLink(i + 1, j + 1, adjacencyMatrix[i, j]);
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Construit le graphe à partir d'une matrice d'adjacence et d'un ensemble de noeuds déjà existants.
+        /// La matrice d'adjacence est une matrice carrée où chaque élément représente un poids de lien.
+        /// Cette méthode crée donc tous les liens correspondant à la matrice mais également les noeuds 
+        /// qui n'existent pas encore, c'est-à-dire qui ne sont pas dans l'ensemble de noeuds récupéré.
+        /// </summary>
+        /// <param name="adjacencyMatrix">La matrice d'adjacence.</param>
+        /// <param name="nodes">L'ensemble de noeuds déjà existants.</param>
+        public void FromAdjacencyMatrixWithNodes(int[,] adjacencyMatrix, List<Node<T>> nodes)
+        {
+            AddNodes(nodes);
             for (int i = 0; i < adjacencyMatrix.GetLength(0); i++)
             {
                 for (int j = 0; j < adjacencyMatrix.GetLength(1); j++)
@@ -408,6 +445,45 @@ namespace Cook_Eat
                 }
             }
             return dist;
+        }
+
+
+        /// <summary>
+        /// Méthode permettant d'obtenir le plus court chemin entre deux noeuds ainsi que le poids correspondant 
+        /// en utilisant soit l'algorithme de Dijkstra, soit l'algorithme de Bellman-Ford.
+        /// Utilise une pile pour inverser l'ordre de parcours vu que nous partons du noeud d'arrivée et que
+        /// l'on regarde les prédécesseurs qui donne le plus court chemin jusqu'à arriver au noeud de départ.
+        /// </summary>
+        /// <param name="source">Le noeud depuis lequel on souhaite partir.</param>
+        /// <param name="target">Le noeud vers lequel on souhaite aller.</param>
+        /// <param name="method">La méthode choisie : 1 pour Dijkstra sinon Bellman-Ford est utilisée.</param>
+        /// <returns>Un tuple avec une liste contenant les Ids des noeuds permettant le plus court 
+        /// chemin de source vers target ainsi que le poids total de ce chemin.</returns>
+        public (List<int>, double) ShortestPath(Node<T> source, Node<T> target, int method)
+        {
+            List<int> path = [];
+            Stack<int> tmp = [];
+            (double, int)[] dist;
+            if (method == 1) { dist = Dijkstra(source); }
+            else { dist = BellmanFord(source); }
+            if (dist != null)
+            {
+                int i = target.Id - 1;
+                if (dist[i].Item1 != double.MaxValue)
+                {
+                    while (i != source.Id - 1)
+                    {
+                        tmp.Push(i + 1);
+                        i = dist[i].Item2;
+                    }
+                    tmp.Push(source.Id);
+                    while (tmp.Count != 0)
+                    {
+                        path.Add(tmp.Pop());
+                    }
+                }
+            }
+            return (path, dist[target.Id - 1].Item1);
         }
     }
 }
